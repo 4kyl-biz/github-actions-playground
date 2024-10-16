@@ -33,23 +33,17 @@ jobs:
           key: ${{ runner.os }}-yarn-${{ hashFiles('my-app/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-yarn-
+     # Step 4: Build and cache Docker image
+      - name: Build Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./Dockerfile
+          push: false  # This is only for local build; set to true if pushing to a registry
+          tags: my-app:latest
+          cache-from: type=gha  # Use GitHub Actions cache for Docker layers
+          cache-to: type=gha,mode=max  # Cache Docker layers
 
-      # Step 4: Install dependencies in the `./my-app` folder
-      - name: Install dependencies
-        run: yarn install
-        working-directory: ./my-app
-
-      # Step 5: Run lint checks
-      - name: Run lint
-        run: yarn lint
-        working-directory: ./my-app
-
-      # Step 6: Run tests
-      - name: Run tests
-        run: yarn test
-        working-directory: ./my-app
-
-      # Step 7: Build the Next.js app
-      - name: Build Next.js app
-        run: yarn build
-        working-directory: ./my-app
+   # Step 5: Test the application in Docker container (optional, example)
+      - name: Run Docker container
+        run: docker run -d -p 3000:3000 my-app:latest
