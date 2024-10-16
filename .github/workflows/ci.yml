@@ -39,7 +39,7 @@ jobs:
         run: yarn install
         working-directory: ./my-app
 
-      # Step 5: Run lint checks (Optional but recommended)
+      # Step 5: Run lint checks
       - name: Run lint
         run: yarn lint
         working-directory: ./my-app
