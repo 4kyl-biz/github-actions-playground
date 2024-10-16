@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the code
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Node.js (You can specify the Node.js version)
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '22.9.0'
+
+      # Step 3: Cache Yarn dependencies
+      - name: Cache Yarn dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.yarn-cache
+            node_modules
+          key: ${{ runner.os }}-yarn-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+
+      # Step 4: Install dependencies
+      - name: Install dependencies
+        run: yarn install
+
+      # Step 5: Run lint checks (Optional but recommended)
+      - name: Run lint
+        run: yarn lint
+
+      # Step 6: Run tests
+      - name: Run tests
+        run: yarn test
+
+      # Step 7: Build the Next.js app
+      - name: Build Next.js app
+        run: yarn build
