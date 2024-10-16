@@ -29,23 +29,27 @@ jobs:
         with:
           path: |
             ~/.yarn-cache
-            node_modules
-          key: ${{ runner.os }}-yarn-${{ hashFiles('yarn.lock') }}
+            my-app/node_modules
+          key: ${{ runner.os }}-yarn-${{ hashFiles('my-app/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-yarn-
 
-      # Step 4: Install dependencies
+      # Step 4: Install dependencies in the `./my-app` folder
       - name: Install dependencies
         run: yarn install
+        working-directory: ./my-app
 
-      # Step 5: Run lint checks (Optional but recommended)
+      # Step 5: Run lint checks
       - name: Run lint
         run: yarn lint
+        working-directory: ./my-app
 
       # Step 6: Run tests
       - name: Run tests
         run: yarn test
+        working-directory: ./my-app
 
       # Step 7: Build the Next.js app
       - name: Build Next.js app
         run: yarn build
+        working-directory: ./my-app
